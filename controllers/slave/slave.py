@@ -25,6 +25,7 @@ import random
 import paho.mqtt.client as mqtt
 import time
 from ml import predict
+import threading
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
 
@@ -36,8 +37,32 @@ topic = "iot"
 
 
 
-
-
+def predict_thread(self):
+    print("happened")
+    try: 
+    
+       if(self.camera.getImageArray()):
+            image_now = self.camera.getImageArray()
+            print(predict(image_now))
+            if(predict(image_now)):
+        # Create a MQTT client
+                client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, "PUBLISHER")
+                
+                # Connect to the broker
+                client.connect(broker_address, port)
+                
+                
+                message = "Intruder has been detected"
+                client.publish(topic, message)
+                # print("Message sent:\n", message)
+                    
+                
+                # Disconnect from the broker
+                client.disconnect()
+                    
+                    
+    except Exception as e:
+        print(e)
 
 
 
@@ -92,6 +117,10 @@ class Slave(Robot):
         total_duration = turn_duration + move_forward_duration + avoid_obstacles_duration
         current_time = 0
         cnt = 0
+        
+        
+        
+
         while True:
             if current_time < turn_duration:
                 self.mode = self.Mode.TURN
@@ -133,34 +162,8 @@ class Slave(Robot):
                 speeds[1] = -self.maxSpeed / 2
             self.motors[0].setVelocity(speeds[0])
             self.motors[1].setVelocity(speeds[1])
-            try: 
-                if(self.camera.getImageArray()):
-                    image_now = self.camera.getImageArray()
-                    print(predict(image_now))
-                    if(predict(image_now)):
-                    # Create a MQTT client
-                        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, "PUBLISHER")
-                        
-                        # Connect to the broker
-                        client.connect(broker_address, port)
-                        
-                        
-                        message = "Intruder has been detected"
-                        client.publish(topic, message)
-                        # print("Message sent:\n", message)
-                           
-                        
-                        # Disconnect from the broker
-                        client.disconnect()
-                    
-                    # print(image_now)
-                    
-                    # if(True):
-                        # message = "Intruder has been detected"
-                        # self.emitter.send(message.encode('utf-8'))
-            except Exception as e:
-                print(e)
-
+            mqtt_thread = threading.Thread(target=predict_thread,args =(self,))
+            mqtt_thread.start()
             # Perform a simulation step, quit the loop when
             # Webots is about to quit.
             if self.step(self.timeStep) == -1:
