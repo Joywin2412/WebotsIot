@@ -5,7 +5,7 @@ sceneTreePerspectives: 000000ff000000010000000300000022000002d2000000fa010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 0 "controllers/driver/driver.py" "controllers/slave/slave.py"
+textFiles: 1 "controllers/driver/driver.py" "controllers/slave/slave.py"
 consoles: Console:All:All
 renderingDevicePerspectives: robot1:camera;1;1;0;0
 renderingDevicePerspectives: robot2:camera;1;1;0;0.767606

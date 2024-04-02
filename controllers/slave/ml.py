@@ -14,8 +14,8 @@ from sklearn.model_selection import train_test_split
 m,n = 32,32
 x=[]
 y=[]
-import joblib
-model = joblib.load("model_latest.pkl")
+# import joblib
+# model = joblib.load("model_latest.pkl")
 
 # net = cv2.dnn.readNet("./yolov3.weights", "./darknet/cfg/yolov3.cfg")
 # print(net)
@@ -28,7 +28,8 @@ def predict(image):
     x = []
     x.append(image)
     x = np.array(x)
-    return np.argmax(model.predict(x))
+    return 1
+    # return np.argmax(model.predict(x))
 # def predict(image):
 #     image = cv2.imread("12.png")
 #     image = np.asarray(image)
